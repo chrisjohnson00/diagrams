@@ -1,0 +1,33 @@
+name: 'Generate Graphviz PNGs'
+#
+# This workflow will generate a png file for each *.gv file.
+# For example, if you have a `foo/bar/foobar.gv` file, this will create and
+# commit/push `foo/bar/foobar.png`
+#
+
+on:
+  push:
+    branches-ignore: ['main']
+
+jobs:
+  graphviz:
+    name: 'Generate Graphviz PNGs'
+    runs-on: 'ubuntu-20.04'
+    steps:
+      - uses: 'actions/checkout@v2.3.4'
+        with:
+          token: '${{ secrets.REPO_ONLY }}'
+      - name: 'Setup Graphviz'
+        uses: 'ts-graphviz/setup-graphviz@v1'
+      - name: 'Generate PNGs from graphviz files'
+        run: |
+          for source in **/*.gv; do
+            FILENAME=${source/gv/png}
+            echo "::debug::Generating ${FILENAME} from ${source}"
+            cat $source | dot -Tpng > $FILENAME
+          done
+      - uses: 'stefanzweifel/git-auto-commit-action@v4.11.0'
+        name: 'commit graphviz png files'
+        with:
+          commit_message: 'chore: updating graphviz png files'
+          file_pattern: '*.png'
