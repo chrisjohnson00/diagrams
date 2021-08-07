@@ -1,0 +1,62 @@
+digraph G {
+  node [shape="rect"]
+  rankdir="TB";
+  compound=true; nodesep=1.0;
+
+  plex [label="Plex"];
+  internet [shape="tripleoctagon", label="Torrent Sites"];
+
+ subgraph cluster_k8s {
+    label="Kubernetes Cluster";
+    handbrakeWebHook [label="Handbrake Webhook"];
+    handbrakeFileMover [label="Handbrake File Mover"];
+    handbrakeJobCreator [label="Handbrake Job Creator"];
+    handbrakeEncodingJob [label="Handbrake Encoding Job"];
+    metadataCleaner [label="Metadata Cleaner"];
+    qbittorrent [label="Qbittorrent"];
+    qbittorrentVpn [label="Qbittorrent VPN"];
+    jackett [label="Jackett"];
+    plexLibraryUpdater [label="Plex Library Updater"]
+    subgraph cluster_pulsar {
+        label="Pulsar"
+        handbrakeFileMoveTopic [label="Topic: handbrake-file-move"];
+        }
+    subgraph cluster_kafka {
+        label="Kafka"
+        postMoveTopic [label="Topic: postMove"];
+        }
+    }
+
+  subgraph cluster_nas {
+    label="Network Attached Storage"
+    sonarr [label="Sonarr"];
+    radarr [label="Radarr"];
+    nfs [label="NFS"];
+    }
+
+    plex -> nfs;
+    jackett -> internet;
+    qbittorrent -> qbittorrentVpn;
+    qbittorrentVpn -> internet;
+    qbittorrent -> nfs;
+    sonarr -> jackett;
+    radarr -> jackett;
+    sonarr -> qbittorrent;
+    radarr -> qbittorrent;
+    sonarr -> handbrakeWebHook;
+    radarr -> handbrakeWebHook;
+    sonarr -> nfs;
+    radarr -> nfs;
+    handbrakeWebHook -> handbrakeFileMoveTopic [label="Producer"];
+    handbrakeFileMover -> handbrakeFileMoveTopic [label="Consumer"];
+    handbrakeFileMover -> nfs;
+    handbrakeJobCreator -> nfs;
+    handbrakeJobCreator -> handbrakeEncodingJob;
+    handbrakeEncodingJob -> handbrakeFileMoveTopic [label="Producer"];
+    handbrakeEncodingJob -> nfs;
+    handbrakeFileMover -> postMoveTopic [label="Producer"];
+    metadataCleaner -> postMoveTopic [label="Consumer"];
+    metadataCleaner -> nfs;
+    plexLibraryUpdater -> postMoveTopic [label="Consumer"];
+    plexLibraryUpdater -> plex;
+}
