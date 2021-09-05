@@ -3,7 +3,8 @@ digraph G {
   rankdir="TB";
   compound=true; nodesep=1.0;
 
-  internet [shape="tripleoctagon", label="Torrent Sites"];
+  torrents [shape="tripleoctagon", label="Torrent Sites"];
+  internet [shape="tripleoctagon", label="Internet"];
   discord [label="Discord"];
   awx [label="Ansible AWX"];
   pushover [label="Pushover"];
@@ -47,10 +48,10 @@ digraph G {
     }
 
     plex -> nfs;
-    jackett -> internet;
+    jackett -> torrents;
     qbittorrent -> qbittorrentVpn;
     qbittorrent -> nfs;
-    qbittorrentVpn -> internet;
+    qbittorrentVpn -> torrents;
     sonarr -> jackett;
     sonarr -> qbittorrent;
     sonarr -> handbrakeWebHook;
