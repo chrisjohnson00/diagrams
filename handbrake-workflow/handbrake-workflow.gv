@@ -3,8 +3,10 @@ digraph G {
   rankdir="TB";
   compound=true; nodesep=1.0;
 
-  plex [label="Plex"];
   internet [shape="tripleoctagon", label="Torrent Sites"];
+  discord [label="Discord"];
+  awx [label="Ansible AWX"];
+  pushover [label="Pushover"];
 
  subgraph cluster_k8s {
     label="Kubernetes Cluster";
@@ -16,7 +18,11 @@ digraph G {
     qbittorrent [label="Qbittorrent"];
     qbittorrentVpn [label="Qbittorrent VPN"];
     jackett [label="Jackett"];
-    plexLibraryUpdater [label="Plex Library Updater"]
+    plexLibraryUpdater [label="Plex Library Updater"];
+    awxProxy [label="AWX Proxy"];
+    consul [label="Consul"];
+    stephenluProxy [label="Stephen Lu Proxy"];
+    redis [label="Redis Cache"];
     subgraph cluster_pulsar {
         label="Pulsar"
         handbrakeFileMoveTopic [label="Topic: handbrake-file-move"];
@@ -34,29 +40,52 @@ digraph G {
     nfs [label="NFS"];
     }
 
+  subgraph cluster_nfs1 {
+    label="Plex Server"
+      plex [label="Plex"];
+      tautulli [label="Tautulli"];
+    }
+
     plex -> nfs;
     jackett -> internet;
     qbittorrent -> qbittorrentVpn;
-    qbittorrentVpn -> internet;
     qbittorrent -> nfs;
+    qbittorrentVpn -> internet;
     sonarr -> jackett;
-    radarr -> jackett;
     sonarr -> qbittorrent;
-    radarr -> qbittorrent;
     sonarr -> handbrakeWebHook;
-    radarr -> handbrakeWebHook;
     sonarr -> nfs;
+    radarr -> jackett;
+    radarr -> qbittorrent;
+    radarr -> handbrakeWebHook;
     radarr -> nfs;
+    radarr -> stephenluProxy;
     handbrakeWebHook -> handbrakeFileMoveTopic [label="Producer"];
+    handbrakeWebHook -> consul;
     handbrakeFileMover -> handbrakeFileMoveTopic [label="Consumer"];
     handbrakeFileMover -> nfs;
+    handbrakeFileMover -> consul;
+    handbrakeFileMover -> postMoveTopic [label="Producer"];
     handbrakeJobCreator -> nfs;
     handbrakeJobCreator -> handbrakeEncodingJob;
+    handbrakeJobCreator -> consul;
     handbrakeEncodingJob -> handbrakeFileMoveTopic [label="Producer"];
     handbrakeEncodingJob -> nfs;
-    handbrakeFileMover -> postMoveTopic [label="Producer"];
+    handbrakeEncodingJob -> consul;
     metadataCleaner -> postMoveTopic [label="Consumer"];
     metadataCleaner -> nfs;
+    metadataCleaner -> consul;
     plexLibraryUpdater -> postMoveTopic [label="Consumer"];
     plexLibraryUpdater -> plex;
+    plexLibraryUpdater -> consul;
+    tautulli -> plex;
+    tautulli -> discord;
+    tautulli -> awxProxy;
+    awxProxy -> awx;
+    awxProxy -> consul;
+    awx -> plex;
+    stephenluProxy -> internet;
+    stephenluProxy -> consul;
+    stephenluProxy -> redis;
+    stephenluProxy -> pushover;
 }
