@@ -5,9 +5,9 @@ digraph G {
 
   torrents [shape="tripleoctagon", label="Torrent Sites"];
   internet [shape="tripleoctagon", label="Internet"];
-  discord [label="Discord"];
+  discord [shape="tripleoctagon", label="Discord"];
   awx [label="Ansible AWX"];
-  pushover [label="Pushover"];
+  pushover [shape="tripleoctagon", label="Pushover"];
 
  subgraph cluster_k8s {
     label="Kubernetes Cluster";
