@@ -8,6 +8,7 @@ digraph G {
   discord [shape="tripleoctagon", label="Discord"];
   awx [label="Ansible AWX"];
   pushover [shape="tripleoctagon", label="Pushover"];
+  user [shape="house", label="Remote User"];
 
  subgraph cluster_k8s {
     label="Kubernetes Cluster";
@@ -24,6 +25,7 @@ digraph G {
     consul [label="Consul"];
     stephenluProxy [label="Stephen Lu Proxy"];
     redis [label="Redis Cache"];
+    ombi [label="Ombi"];
     subgraph cluster_pulsar {
         label="Pulsar"
         handbrakeFileMoveTopic [label="Topic: handbrake-file-move"];
@@ -89,4 +91,8 @@ digraph G {
     stephenluProxy -> consul;
     stephenluProxy -> redis;
     stephenluProxy -> pushover;
+    user -> ombi;
+    ombi -> radarr;
+    ombi -> sonarr;
+    ombi -> discord;
 }
