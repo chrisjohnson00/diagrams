@@ -9,6 +9,7 @@ digraph G {
   awx [label="Ansible AWX"];
   pushover [shape="tripleoctagon", label="Pushover"];
   user [shape="house", label="Remote User"];
+  plextv [shape="tripleoctagon", label="Plex.tv"];
 
  subgraph cluster_k8s {
     label="Kubernetes Cluster";
@@ -92,7 +93,10 @@ digraph G {
     stephenluProxy -> redis;
     stephenluProxy -> pushover;
     user -> ombi;
+    user -> plextv;
+    plextv -> plex
     ombi -> radarr;
     ombi -> sonarr;
     ombi -> discord;
+
 }
