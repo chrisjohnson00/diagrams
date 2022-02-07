@@ -27,6 +27,7 @@ digraph G {
     stephenluProxy [label="Stephen Lu Proxy"];
     redis [label="Redis Cache"];
     ombi [label="Ombi"];
+    pmm [label="Plex Media Manager"];
     subgraph cluster_pulsar {
         label="Pulsar"
         handbrakeFileMoveTopic [label="Topic: handbrake-file-move"];
@@ -98,5 +99,10 @@ digraph G {
     ombi -> radarr;
     ombi -> sonarr;
     ombi -> discord;
+    pmm -> radarr;
+    pmm -> sonarr;
+    pmm -> plex;
+    pmm -> tautulli;
+    pmm -> internet;
 
 }
